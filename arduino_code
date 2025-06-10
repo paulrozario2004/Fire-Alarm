@@ -1,0 +1,32 @@
+// Define pin connections
+const int gasSensorPin = A0;     // MQ-2 analog output
+const int flameSensorPin = 2;    // Flame sensor digital output
+const int buzzerPin = 8;         // Buzzer or LED pin
+
+// Threshold for gas level (tune based on testing)
+const int gasThreshold = 150;
+
+void setup() {
+  pinMode(flameSensorPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int gasValue = analogRead(gasSensorPin);
+  int flameValue = digitalRead(flameSensorPin); // 0 = flame detected, 1 = no flame
+
+  Serial.print("Gas Value: ");
+  Serial.print(gasValue);
+  Serial.print(" | Flame Detected: ");
+  Serial.println(flameValue == 0 ? "YES" : "NO");
+
+  // Fire or gas detected
+  if (gasValue > gasThreshold || flameValue == 0) {
+    digitalWrite(buzzerPin, HIGH);  // Turn on buzzer
+  } else {
+    digitalWrite(buzzerPin, LOW);   // Turn off buzzer
+  }
+
+  delay(500);  // Small delay for stability
+}
